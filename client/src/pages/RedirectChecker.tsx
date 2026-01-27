@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Zap, Loader2, AlertCircle, CheckCircle2, ArrowDown, ExternalLink, Globe, List } from "lucide-react";
+import { ArrowRight, Zap, Loader2, AlertCircle, CheckCircle2, ArrowDown, ExternalLink, Globe, List, ChevronDown, ChevronUp } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { motion } from "framer-motion";
@@ -244,35 +244,16 @@ export default function RedirectChecker() {
                       <span>{result.error}</span>
                     </div>
                   ) : (
-                    <div className="space-y-2">
+                    <div className="space-y-4">
                       {result.hops.map((hop, hopIndex) => (
-                        <div key={hopIndex} className="relative">
-                          <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/30 border border-border">
-                            <div className="flex-shrink-0 mt-0.5">
-                              {getStatusIcon(hop.status)}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2 flex-wrap">
-                                <Badge variant="outline" className={getStatusColor(hop.status)}>
-                                  {hop.status}
-                                </Badge>
-                                <span className="font-mono text-sm truncate">
-                                  {hop.url}
-                                </span>
-                              </div>
-                              {hop.headers?.location && (
-                                <p className="text-xs text-muted-foreground mt-1">
-                                  Location: {hop.headers.location}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                          {hopIndex < result.hops.length - 1 && (
-                            <div className="flex justify-center py-1">
-                              <ArrowDown className="w-4 h-4 text-muted-foreground" />
-                            </div>
-                          )}
-                        </div>
+                        <HopDetails 
+                          key={hopIndex} 
+                          hop={hop} 
+                          hopIndex={hopIndex} 
+                          isLast={hopIndex === result.hops.length - 1}
+                          getStatusColor={getStatusColor}
+                          getStatusIcon={getStatusIcon}
+                        />
                       ))}
                     </div>
                   )}
@@ -282,6 +263,102 @@ export default function RedirectChecker() {
           </motion.div>
         )}
       </div>
+    </div>
+  );
+}
+
+function HopDetails({ 
+  hop, 
+  hopIndex, 
+  isLast, 
+  getStatusColor, 
+  getStatusIcon 
+}: { 
+  hop: RedirectHop; 
+  hopIndex: number; 
+  isLast: boolean;
+  getStatusColor: (status: number) => string;
+  getStatusIcon: (status: number) => JSX.Element;
+}) {
+  const [showHeaders, setShowHeaders] = useState(false);
+  const headers = hop.headers || {};
+  const headerEntries = Object.entries(headers).sort((a, b) => a[0].localeCompare(b[0]));
+
+  return (
+    <div className="relative">
+      <div className="rounded-lg bg-muted/30 border border-border overflow-hidden">
+        <div className="flex items-start gap-3 p-4">
+          <div className="flex-shrink-0 mt-0.5">
+            {getStatusIcon(hop.status)}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <Badge variant="outline" className={getStatusColor(hop.status)}>
+                {hop.status}
+              </Badge>
+              <span className="font-mono text-sm break-all">
+                {hop.url}
+              </span>
+            </div>
+            {hop.headers?.location && (
+              <p className="text-xs text-muted-foreground mt-2">
+                Redirects to: <span className="font-mono">{hop.headers.location}</span>
+              </p>
+            )}
+          </div>
+        </div>
+        
+        {headerEntries.length > 0 && (
+          <>
+            <button
+              type="button"
+              onClick={() => setShowHeaders(!showHeaders)}
+              className="w-full flex items-center justify-between px-4 py-2 bg-muted/50 border-t border-border text-sm text-muted-foreground hover:text-foreground transition-colors"
+              data-testid={`button-toggle-headers-${hopIndex}`}
+            >
+              <span className="flex items-center gap-2">
+                <span className="font-medium">Response Headers</span>
+                <Badge variant="secondary" className="text-xs">{headerEntries.length}</Badge>
+              </span>
+              {showHeaders ? (
+                <ChevronUp className="w-4 h-4" />
+              ) : (
+                <ChevronDown className="w-4 h-4" />
+              )}
+            </button>
+            
+            {showHeaders && (
+              <div className="border-t border-border bg-background/50">
+                <div className="max-h-[400px] overflow-auto">
+                  <table className="w-full text-sm">
+                    <tbody>
+                      {headerEntries.map(([key, value], idx) => (
+                        <tr 
+                          key={key} 
+                          className={idx % 2 === 0 ? "bg-muted/20" : ""}
+                        >
+                          <td className="px-4 py-2 font-mono text-xs font-medium text-primary whitespace-nowrap align-top border-r border-border">
+                            {key}
+                          </td>
+                          <td className="px-4 py-2 font-mono text-xs text-foreground break-all">
+                            {value}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+      
+      {!isLast && (
+        <div className="flex justify-center py-2">
+          <ArrowDown className="w-4 h-4 text-muted-foreground" />
+        </div>
+      )}
     </div>
   );
 }
