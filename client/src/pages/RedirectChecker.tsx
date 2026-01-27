@@ -3,8 +3,9 @@ import { Navbar } from "@/components/Navbar";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Zap, Loader2, AlertCircle, CheckCircle2, ArrowDown, ExternalLink } from "lucide-react";
+import { ArrowRight, Zap, Loader2, AlertCircle, CheckCircle2, ArrowDown, ExternalLink, Globe, List } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { motion } from "framer-motion";
@@ -17,17 +18,28 @@ interface BulkRedirectResult {
 }
 
 export default function RedirectChecker() {
-  const [urls, setUrls] = useState("");
+  const [mode, setMode] = useState<"single" | "bulk">("single");
+  const [singleUrl, setSingleUrl] = useState("");
+  const [bulkUrls, setBulkUrls] = useState("");
 
   const { mutate: checkRedirects, isPending, data: results } = useMutation<BulkRedirectResult[]>({
     mutationFn: async () => {
-      const urlList = urls
-        .split('\n')
-        .map(u => u.trim())
-        .filter(u => u.length > 0);
+      let urlList: string[];
       
-      if (urlList.length === 0) {
-        throw new Error("Please enter at least one URL");
+      if (mode === "single") {
+        if (!singleUrl.trim()) {
+          throw new Error("Please enter a URL");
+        }
+        urlList = [singleUrl.trim()];
+      } else {
+        urlList = bulkUrls
+          .split('\n')
+          .map(u => u.trim())
+          .filter(u => u.length > 0);
+        
+        if (urlList.length === 0) {
+          throw new Error("Please enter at least one URL");
+        }
       }
 
       const response = await apiRequest("POST", "/api/redirect-check", { urls: urlList });
@@ -39,6 +51,8 @@ export default function RedirectChecker() {
     e.preventDefault();
     checkRedirects();
   };
+
+  const urlCount = mode === "single" ? (singleUrl.trim() ? 1 : 0) : bulkUrls.split('\n').filter(u => u.trim()).length;
 
   const getStatusColor = (status: number) => {
     if (status >= 200 && status < 300) return "bg-emerald-500/10 text-emerald-600 border-emerald-500/20";
@@ -71,7 +85,7 @@ export default function RedirectChecker() {
               <Zap className="w-6 h-6 text-amber-400" />
             </div>
             <h1 className="text-4xl md:text-5xl font-display font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-amber-100 to-amber-200">
-              Bulk Redirect Checker
+              Redirect Checker
             </h1>
           </motion.div>
           <motion.p 
@@ -80,48 +94,103 @@ export default function RedirectChecker() {
             transition={{ delay: 0.1 }}
             className="text-lg text-slate-300 mb-8 max-w-2xl mx-auto"
           >
-            Check multiple URLs at once to trace redirect chains, identify redirect loops, and catch SEO issues before they impact your rankings.
+            Trace redirect chains, identify loops, and catch SEO issues before they impact your rankings.
           </motion.p>
         </div>
       </div>
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-20">
         <Card className="shadow-xl border-border">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Zap className="w-5 h-5 text-amber-500" />
-              Enter URLs to Check
-            </CardTitle>
-            <CardDescription>
-              Enter one URL per line. You can check up to 50 URLs at once.
-            </CardDescription>
+          <CardHeader className="pb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-amber-500" />
+                  Check Redirects
+                </CardTitle>
+                <CardDescription className="mt-1">
+                  {mode === "single" ? "Enter a single URL to check" : "Enter multiple URLs, one per line"}
+                </CardDescription>
+              </div>
+              <div className="flex items-center bg-muted rounded-lg p-1">
+                <button
+                  type="button"
+                  data-testid="button-mode-single"
+                  onClick={() => setMode("single")}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                    mode === "single" 
+                      ? "bg-background text-foreground shadow-sm" 
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <Globe className="w-4 h-4" />
+                  Single URL
+                </button>
+                <button
+                  type="button"
+                  data-testid="button-mode-bulk"
+                  onClick={() => setMode("bulk")}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                    mode === "bulk" 
+                      ? "bg-background text-foreground shadow-sm" 
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <List className="w-4 h-4" />
+                  Bulk URLs
+                </button>
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <Textarea
-                data-testid="input-urls"
-                placeholder={"https://example.com\nhttps://example.org/page\nhttps://test.com/redirect"}
-                value={urls}
-                onChange={(e) => setUrls(e.target.value)}
-                className="min-h-[200px] font-mono text-sm"
-              />
-              <div className="flex justify-between items-center">
-                <p className="text-sm text-muted-foreground">
-                  {urls.split('\n').filter(u => u.trim()).length} URL(s) entered
-                </p>
+              {mode === "single" ? (
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Globe className="h-5 w-5 text-muted-foreground" />
+                  </div>
+                  <Input
+                    data-testid="input-single-url"
+                    placeholder="https://example.com"
+                    value={singleUrl}
+                    onChange={(e) => setSingleUrl(e.target.value)}
+                    className="pl-10 h-12 text-base"
+                  />
+                </div>
+              ) : (
+                <Textarea
+                  data-testid="input-bulk-urls"
+                  placeholder={"https://example.com\nhttps://example.org/page\nhttps://test.com/redirect\n\nEnter one URL per line..."}
+                  value={bulkUrls}
+                  onChange={(e) => setBulkUrls(e.target.value)}
+                  className="min-h-[200px] font-mono text-sm"
+                />
+              )}
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <div className="flex items-center gap-2">
+                  {urlCount > 0 && (
+                    <Badge variant="secondary" className="text-xs">
+                      {urlCount} URL{urlCount > 1 ? 's' : ''} to check
+                    </Badge>
+                  )}
+                  {mode === "bulk" && (
+                    <span className="text-xs text-muted-foreground">Unlimited URLs supported</span>
+                  )}
+                </div>
                 <Button 
                   data-testid="button-check-redirects"
-                  disabled={isPending || !urls.trim()}
+                  disabled={isPending || urlCount === 0}
                   size="lg"
+                  className="w-full sm:w-auto"
                 >
                   {isPending ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Checking...
+                      Checking {urlCount} URL{urlCount > 1 ? 's' : ''}...
                     </>
                   ) : (
                     <>
-                      Check Redirects
+                      Check Redirect{urlCount > 1 ? 's' : ''}
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </>
                   )}

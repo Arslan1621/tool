@@ -235,9 +235,6 @@ export async function registerRoutes(
         return res.status(400).json({ message: "Please provide an array of URLs" });
       }
 
-      if (urls.length > 50) {
-        return res.status(400).json({ message: "Maximum 50 URLs allowed per request" });
-      }
 
       const results = await Promise.all(
         urls.map(async (url: string) => {
