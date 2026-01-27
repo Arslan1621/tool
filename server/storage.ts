@@ -1,38 +1,57 @@
-import { type User, type InsertUser } from "@shared/schema";
-import { randomUUID } from "crypto";
 
-// modify the interface with any CRUD methods
-// you might need
+import { domains, type InsertDomain } from "@shared/schema";
+import { db } from "./db";
+import { eq, desc } from "drizzle-orm";
 
 export interface IStorage {
-  getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  getDomain(domain: string): Promise<typeof domains.$inferSelect | undefined>;
+  getRecentDomains(limit?: number): Promise<typeof domains.$inferSelect[]>;
+  upsertDomain(domain: InsertDomain): Promise<typeof domains.$inferSelect>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<string, User>;
-
-  constructor() {
-    this.users = new Map();
+export class DatabaseStorage implements IStorage {
+  async getDomain(domainName: string): Promise<typeof domains.$inferSelect | undefined> {
+    const [result] = await db
+      .select()
+      .from(domains)
+      .where(eq(domains.domain, domainName));
+    return result;
   }
 
-  async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+  async getRecentDomains(limit = 10): Promise<typeof domains.$inferSelect[]> {
+    return db
+      .select()
+      .from(domains)
+      .orderBy(desc(domains.lastScannedAt))
+      .limit(limit);
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+  async upsertDomain(insertDomain: InsertDomain): Promise<typeof domains.$inferSelect> {
+    // Try to update if exists, otherwise insert
+    // Note: On conflict is Postgres specific, but Drizzle supports it nicely
+    // If we simply want to "save scan", we can check existence first or use ON CONFLICT
+    
+    // We want to merge data if partial updates are allowed, but here a scan usually replaces old data for that tool?
+    // Let's assume a scan might update only specific fields. 
+    // However, Drizzle's `insert(...).onConflictDoUpdate` is cleanest.
+    
+    const [result] = await db
+      .insert(domains)
+      .values(insertDomain)
+      .onConflictDoUpdate({
+        target: domains.domain,
+        set: {
+            redirectData: insertDomain.redirectData,
+            brokenLinksData: insertDomain.brokenLinksData,
+            securityData: insertDomain.securityData,
+            robotsData: insertDomain.robotsData,
+            lastScannedAt: new Date(),
+        }
+      })
+      .returning();
+      
+    return result;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();

@@ -1,18 +1,68 @@
-import { sql } from "drizzle-orm";
-import { pgTable, text, varchar } from "drizzle-orm/pg-core";
+
+import { pgTable, text, serial, jsonb, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const users = pgTable("users", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  username: text("username").notNull().unique(),
-  password: text("password").notNull(),
+// === TABLE DEFINITIONS ===
+export const domains = pgTable("domains", {
+  id: serial("id").primaryKey(),
+  domain: text("domain").unique().notNull(), // e.g., "google.com"
+  
+  // Storing analysis results as JSONB to allow flexible structures for each tool
+  redirectData: jsonb("redirect_data"),        // Chain of redirects
+  brokenLinksData: jsonb("broken_links_data"), // List of broken links
+  securityData: jsonb("security_data"),        // Headers analysis
+  robotsData: jsonb("robots_data"),            // Robots.txt content and validation
+  aiData: jsonb("ai_data"),                    // AI Summary, services, etc.
+  
+  lastScannedAt: timestamp("last_scanned_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
-});
+// === SCHEMAS ===
+export const insertDomainSchema = createInsertSchema(domains);
 
-export type InsertUser = z.infer<typeof insertUserSchema>;
-export type User = typeof users.$inferSelect;
+// === TYPES ===
+export type Domain = typeof domains.$inferSelect;
+export type InsertDomain = z.infer<typeof insertDomainSchema>;
+
+// Tool specific types for JSON columns
+export interface RedirectHop {
+  url: string;
+  status: number;
+  headers: Record<string, string>;
+}
+
+export interface BrokenLinkResult {
+  url: string;
+  status: number | string; // status code or error message
+  anchorText?: string;
+}
+
+export interface SecurityHeaderResult {
+  header: string;
+  value?: string;
+  status: "missing" | "present" | "warning";
+  description?: string;
+}
+
+export interface RobotsResult {
+  content: string | null;
+  isValid: boolean;
+  issues: string[];
+}
+
+export interface AiSummaryResult {
+  summary: string;
+  services: string[];
+  locations: string[];
+  seoTitle: string;
+  seoDescription: string;
+  seoKeywords: string[];
+}
+
+// Request types
+export interface RunScanRequest {
+  url: string;
+  tools: ("redirect" | "broken_links" | "security" | "robots" | "ai")[];
+}
