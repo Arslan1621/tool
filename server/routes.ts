@@ -200,14 +200,33 @@ Sitemap: https://${_req.get('host')}/sitemap.xml`;
       const domains = await storage.getRecentDomains(50000); // Get more for sitemap
       const baseUrl = `https://${_req.get('host')}`;
       
+      // Static pages with their priorities and change frequencies
+      const staticPages = [
+        { path: '/', changefreq: 'daily', priority: '1.0' },
+        { path: '/redirect-checker', changefreq: 'weekly', priority: '0.9' },
+        { path: '/security-checker', changefreq: 'weekly', priority: '0.9' },
+        { path: '/robots-txt', changefreq: 'weekly', priority: '0.9' },
+        { path: '/broken-links', changefreq: 'weekly', priority: '0.9' },
+        { path: '/whois-checker', changefreq: 'weekly', priority: '0.9' },
+        { path: '/about', changefreq: 'monthly', priority: '0.7' },
+        { path: '/blog', changefreq: 'weekly', priority: '0.8' },
+        { path: '/contact', changefreq: 'monthly', priority: '0.7' },
+      ];
+      
       let xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>${baseUrl}/</loc>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>`;
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
 
+      // Add static pages
+      staticPages.forEach(page => {
+        xml += `
+  <url>
+    <loc>${baseUrl}${page.path}</loc>
+    <changefreq>${page.changefreq}</changefreq>
+    <priority>${page.priority}</priority>
+  </url>`;
+      });
+
+      // Add dynamic domain report pages
       domains.forEach(d => {
         xml += `
   <url>
