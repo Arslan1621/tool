@@ -122,8 +122,8 @@ export default function SecurityHeaderChecker() {
       </div>
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-20">
-        <Card className="shadow-xl border-border">
-          <CardHeader className="pb-4">
+        <Card className="shadow-xl border-border overflow-hidden bg-card">
+          <CardHeader className="pb-4 bg-card">
             <CardTitle className="flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-purple-500" />
               Check Security Headers
