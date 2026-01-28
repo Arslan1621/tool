@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Search, Shield, Zap, FileCode, Unplug, ChevronDown, Home, Users, BookOpen, Mail, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { UserButton, SignedIn, SignedOut } from "@clerk/clerk-react";
 
 const tools = [
   { label: "Redirect Checker", href: "/redirect-checker", icon: Zap, description: "Trace redirect chains" },
@@ -146,12 +147,19 @@ export function Navbar() {
           </div>
           
           <div className="flex items-center gap-4">
-            <button 
-              className="bg-foreground text-background px-4 py-2 rounded-lg text-sm font-medium hover:bg-foreground/90 transition-colors"
-              data-testid="button-signin"
-            >
-              Sign In
-            </button>
+            <SignedOut>
+              <Link href="/sign-in">
+                <button 
+                  className="bg-foreground text-background px-4 py-2 rounded-lg text-sm font-medium hover:bg-foreground/90 transition-colors"
+                  data-testid="button-signin"
+                >
+                  Sign In
+                </button>
+              </Link>
+            </SignedOut>
+            <SignedIn>
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
           </div>
         </div>
       </div>

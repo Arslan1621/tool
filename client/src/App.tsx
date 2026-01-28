@@ -3,6 +3,7 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ClerkProvider, SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import DomainReport from "@/pages/DomainReport";
@@ -14,11 +15,21 @@ import WhoisChecker from "@/pages/WhoisChecker";
 import About from "@/pages/About";
 import Blog from "@/pages/Blog";
 import Contact from "@/pages/Contact";
+import { SignInPage, SignUpPage } from "@/pages/Auth";
+import Navbar from "@/components/Navbar";
+
+const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+
+if (!CLERK_PUBLISHABLE_KEY) {
+  throw new Error("Missing Publishable Key");
+}
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/sign-in" component={SignInPage} />
+      <Route path="/sign-up" component={SignUpPage} />
       <Route path="/redirect-checker" component={RedirectChecker} />
       <Route path="/security-checker" component={SecurityHeaderChecker} />
       <Route path="/robots-txt" component={RobotsTxtTool} />
@@ -36,12 +47,19 @@ function Router() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Router />
-      </TooltipProvider>
-    </QueryClientProvider>
+    <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY}>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <div className="min-h-screen bg-background">
+            <Navbar />
+            <main>
+              <Router />
+            </main>
+          </div>
+          <Toaster />
+        </TooltipProvider>
+      </QueryClientProvider>
+    </ClerkProvider>
   );
 }
 
