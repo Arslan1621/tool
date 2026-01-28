@@ -9,6 +9,7 @@ import DomainReport from "@/pages/DomainReport";
 import RedirectChecker from "@/pages/RedirectChecker";
 import SecurityHeaderChecker from "@/pages/SecurityHeaderChecker";
 import RobotsTxtTool from "@/pages/RobotsTxtTool";
+import BrokenLinkChecker from "@/pages/BrokenLinkChecker";
 
 function Router() {
   return (
@@ -17,6 +18,7 @@ function Router() {
       <Route path="/redirect-checker" component={RedirectChecker} />
       <Route path="/security-checker" component={SecurityHeaderChecker} />
       <Route path="/robots-txt" component={RobotsTxtTool} />
+      <Route path="/broken-links" component={BrokenLinkChecker} />
       {/* Route for handling /google.com pattern */}
       <Route path="/:domain" component={DomainReport} />
       <Route component={NotFound} />
