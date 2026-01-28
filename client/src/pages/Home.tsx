@@ -19,6 +19,7 @@ export default function Home() {
     security: true,
     robots: true,
     ai: true,
+    whois: true,
   });
 
   const { data: recentScans } = useDomains();
@@ -37,7 +38,7 @@ export default function Home() {
 
     const selectedTools = Object.entries(tools)
       .filter(([_, enabled]) => enabled)
-      .map(([key]) => key) as ("redirect" | "broken_links" | "security" | "robots")[];
+      .map(([key]) => key) as ("redirect" | "broken_links" | "security" | "robots" | "ai" | "whois")[];
 
     if (selectedTools.length === 0) return;
 
@@ -139,6 +140,14 @@ export default function Home() {
                     className="border-white/50 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                   />
                   <span className="text-slate-300 group-hover:text-white transition-colors">AI Summary</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer group">
+                  <Checkbox 
+                    checked={tools.whois}
+                    onCheckedChange={(c) => setTools(prev => ({ ...prev, whois: c === true }))}
+                    className="border-white/50 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                  />
+                  <span className="text-slate-300 group-hover:text-white transition-colors">WHOIS Info</span>
                 </label>
               </div>
             </form>

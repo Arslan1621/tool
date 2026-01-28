@@ -14,6 +14,7 @@ export const domains = pgTable("domains", {
   securityData: jsonb("security_data"),        // Headers analysis
   robotsData: jsonb("robots_data"),            // Robots.txt content and validation
   aiData: jsonb("ai_data"),                    // AI Summary, services, etc.
+  whoisData: jsonb("whois_data"),              // WHOIS domain info
   
   lastScannedAt: timestamp("last_scanned_at").defaultNow(),
   createdAt: timestamp("created_at").defaultNow(),
@@ -61,8 +62,15 @@ export interface AiSummaryResult {
   seoKeywords: string[];
 }
 
+export interface WhoisResult {
+  domain: string;
+  data: Record<string, string | string[]>;
+  rawText?: string;
+  error?: string;
+}
+
 // Request types
 export interface RunScanRequest {
   url: string;
-  tools: ("redirect" | "broken_links" | "security" | "robots" | "ai")[];
+  tools: ("redirect" | "broken_links" | "security" | "robots" | "ai" | "whois")[];
 }

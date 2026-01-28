@@ -537,6 +537,15 @@ export async function registerRoutes(
       if (input.tools.includes('ai')) {
         updateData.aiData = await checkAiSummary(url);
       }
+
+      if (input.tools.includes('whois')) {
+        try {
+          const whoisData = await whois(domainName);
+          updateData.whoisData = { domain: domainName, data: whoisData };
+        } catch (err: any) {
+          updateData.whoisData = { domain: domainName, error: err.message };
+        }
+      }
       
       // Upsert
       const saved = await storage.upsertDomain(updateData);

@@ -2,11 +2,11 @@ import { useDomain, useRunScan } from "@/hooks/use-domains";
 import { Navbar } from "@/components/Navbar";
 import { useRoute } from "wouter";
 import { Button } from "@/components/ui/button";
-import { RefreshCw, ArrowLeft, ExternalLink, ShieldCheck, AlertCircle, CheckCircle, FileCode, Unplug, Sparkles, MapPin, Briefcase } from "lucide-react";
+import { RefreshCw, ArrowLeft, ExternalLink, ShieldCheck, AlertCircle, CheckCircle, FileCode, Unplug, Sparkles, MapPin, Briefcase, Globe } from "lucide-react";
 import { Link } from "wouter";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { StatusBadge, getStatusCodeBadge } from "@/components/StatusBadge";
-import { RedirectHop, SecurityHeaderResult, BrokenLinkResult, RobotsResult, AiSummaryResult } from "@shared/schema";
+import { RedirectHop, SecurityHeaderResult, BrokenLinkResult, RobotsResult, AiSummaryResult, WhoisResult } from "@shared/schema";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect } from "react";
@@ -24,7 +24,7 @@ export default function DomainReport() {
   const handleRescan = () => {
     reScan({ 
       url: domain, 
-      tools: ["redirect", "broken_links", "security", "robots"] 
+      tools: ["redirect", "broken_links", "security", "robots", "whois", "ai"] 
     });
   };
 
@@ -33,6 +33,7 @@ export default function DomainReport() {
   const brokenLinksData = data.brokenLinksData as BrokenLinkResult[] | null;
   const robotsData = data.robotsData as RobotsResult | null;
   const aiData = data.aiData as AiSummaryResult | null;
+  const whoisData = data.whoisData as WhoisResult | null;
 
   useEffect(() => {
     if (aiData) {
@@ -430,6 +431,55 @@ export default function DomainReport() {
                     </div>
                   </div>
                 </div>
+              </CardContent>
+            </Card>
+          </section>
+        )}
+
+        {/* WHOIS Information */}
+        {whoisData && whoisData.data && (
+          <section id="whois" className="scroll-mt-24">
+            <Card className="border-border shadow-sm">
+              <CardHeader className="border-b border-border/50 bg-muted/30">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 bg-blue-100 text-blue-600 rounded-lg dark:bg-blue-900/30 dark:text-blue-400">
+                    <Globe className="w-5 h-5" />
+                  </div>
+                  <CardTitle>WHOIS Information</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="p-6">
+                {whoisData.error ? (
+                  <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 dark:bg-red-900/10 p-3 rounded">
+                    <AlertCircle className="w-4 h-4" />
+                    {whoisData.error}
+                  </div>
+                ) : (
+                  <div className="rounded-lg border border-border overflow-hidden">
+                    <table className="w-full text-sm">
+                      <tbody>
+                        {Object.entries(whoisData.data).map(([key, value], idx) => (
+                          <tr key={key} className={idx % 2 === 0 ? "bg-muted/20" : ""}>
+                            <td className="px-4 py-3 font-medium text-primary whitespace-nowrap align-top border-r border-border min-w-[180px]">
+                              {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).trim()}:
+                            </td>
+                            <td className="px-4 py-3 text-foreground break-all font-mono text-xs">
+                              {Array.isArray(value) ? (
+                                <div className="space-y-1">
+                                  {value.map((v, i) => (
+                                    <div key={i}>{v}</div>
+                                  ))}
+                                </div>
+                              ) : (
+                                <span>{value}</span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </section>
