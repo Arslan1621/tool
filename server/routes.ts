@@ -384,7 +384,7 @@ export async function registerRoutes(
 
       const brokenLinks: any[] = [];
       const workingLinks: any[] = [];
-      const linksToCheck = Array.from(links.entries()).slice(0, 50);
+      const linksToCheck = Array.from(links.entries());
 
       await Promise.all(
         linksToCheck.map(async ([linkUrl, anchorText]) => {

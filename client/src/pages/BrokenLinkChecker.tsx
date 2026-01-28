@@ -181,7 +181,7 @@ export default function BrokenLinkChecker() {
                 <p className="text-xs text-muted-foreground">
                   {mode === "single" 
                     ? "Check if a specific URL returns a valid response" 
-                    : "Scans all links on the page (up to 50 links)"}
+                    : "Scans all links found on the page"}
                 </p>
                 <Button 
                   data-testid="button-check"
