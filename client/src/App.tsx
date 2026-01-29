@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ClerkProvider, SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
+import Dashboard from "@/pages/Dashboard";
 import DomainReport from "@/pages/DomainReport";
 import RedirectChecker from "@/pages/RedirectChecker";
 import SecurityHeaderChecker from "@/pages/SecurityHeaderChecker";
@@ -29,6 +30,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/dashboard" component={Dashboard} />
       <Route path="/sign-in" component={SignInPage} />
       <Route path="/sign-up" component={SignUpPage} />
       <Route path="/redirect-checker" component={RedirectChecker} />
