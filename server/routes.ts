@@ -23,7 +23,10 @@ async function lookupWhois(domain: string) {
   try {
     const whoisData = await whois(domain);
     const rawResponse = JSON.stringify(whoisData).toLowerCase();
-    if (rawResponse.includes("rate limit exceeded") || Object.keys(whoisData).length <= 1) {
+    if (rawResponse.includes("rate limit exceeded") || 
+        rawResponse.includes("retired") || 
+        rawResponse.includes("use our rdap service") ||
+        Object.keys(whoisData).length <= 1) {
       throw new Error("WHOIS rate limit or empty response");
     }
     return whoisData;
