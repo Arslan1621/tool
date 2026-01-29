@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useDomains, useRunScan } from "@/hooks/use-domains";
-import { Navbar } from "@/components/Navbar";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -47,8 +46,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <Navbar />
-
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-slate-900 text-white pb-24 pt-16">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop')] bg-cover bg-center opacity-10" />

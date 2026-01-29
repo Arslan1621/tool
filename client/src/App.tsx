@@ -17,6 +17,7 @@ import Blog from "@/pages/Blog";
 import Contact from "@/pages/Contact";
 import { SignInPage, SignUpPage } from "@/pages/Auth";
 import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 
 const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -50,11 +51,12 @@ function App() {
     <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY}>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          <div className="min-h-screen bg-background">
+          <div className="min-h-screen bg-background flex flex-col">
             <Navbar />
-            <main>
+            <main className="flex-1">
               <Router />
             </main>
+            <Footer />
           </div>
           <Toaster />
         </TooltipProvider>
