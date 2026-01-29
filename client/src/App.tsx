@@ -32,7 +32,9 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/sign-in" component={SignInPage} />
+      <Route path="/sign-in/:rest*" component={SignInPage} />
       <Route path="/sign-up" component={SignUpPage} />
+      <Route path="/sign-up/:rest*" component={SignUpPage} />
       <Route path="/redirect-checker" component={RedirectChecker} />
       <Route path="/security-checker" component={SecurityHeaderChecker} />
       <Route path="/robots-txt" component={RobotsTxtTool} />
