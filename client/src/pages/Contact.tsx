@@ -34,7 +34,7 @@ export default function Contact() {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <div className="relative overflow-hidden bg-black text-white pb-24 pt-16">
+      <div className="relative overflow-hidden bg-black text-white pb-24 pt-20">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1423666639041-f56000c27a9a?q=80&w=2074&auto=format&fit=crop')] bg-cover bg-center opacity-10" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/90" />
         

@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 export default function About() {
   return (
     <div className="min-h-screen bg-background pb-20">
-      <div className="relative overflow-hidden bg-black text-white pb-24 pt-16">
+      <div className="relative overflow-hidden bg-black text-white pb-24 pt-20">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-10" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/90" />
         

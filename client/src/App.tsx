@@ -15,6 +15,7 @@ import BrokenLinkChecker from "@/pages/BrokenLinkChecker";
 import WhoisChecker from "@/pages/WhoisChecker";
 import About from "@/pages/About";
 import Blog from "@/pages/Blog";
+import BlogPost from "@/pages/BlogPost";
 import Contact from "@/pages/Contact";
 import { SignInPage, SignUpPage } from "@/pages/Auth";
 import { Navbar } from "@/components/Navbar";
@@ -60,6 +61,7 @@ function Router() {
       <Route path="/whois-checker" component={WhoisChecker} />
       <Route path="/about" component={About} />
       <Route path="/blog" component={Blog} />
+      <Route path="/blog/:slug" component={BlogPost} />
       <Route path="/contact" component={Contact} />
       {/* Route for handling /google.com pattern */}
       <Route path="/:domain" component={DomainReport} />
