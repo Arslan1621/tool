@@ -52,7 +52,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* Section 1: Hero / Search Bar */}
-      <div className="relative overflow-hidden bg-black text-white pb-24 pt-16">
+      <div className="relative overflow-hidden bg-black text-white pb-16 pt-16">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop')] bg-cover bg-center opacity-10" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/90" />
         
@@ -165,51 +165,49 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
         {/* Section 2: Free Tools */}
-        <div className="-mt-16 relative z-20">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground">Free Tools</h2>
-            <p className="text-muted-foreground mt-2">Powerful SEO analysis tools at your fingertips</p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <ToolFeatureCard 
-              icon={<Zap className="w-6 h-6 text-amber-500" />}
-              title="Redirect Checker"
-              description="Visualize redirect chains and catch loops before they hurt SEO."
-              href="/redirect-checker"
-            />
-            <ToolFeatureCard 
-              icon={<Unplug className="w-6 h-6 text-emerald-500" />}
-              title="Broken Link Finder"
-              description="Scan pages for 404 errors and broken anchors instantly."
-              href="/broken-links"
-            />
-            <ToolFeatureCard 
-              icon={<Shield className="w-6 h-6 text-purple-500" />}
-              title="Security Audit"
-              description="Verify SSL, HSTS, CSP and other critical security headers."
-              href="/security-checker"
-            />
-            <ToolFeatureCard 
-              icon={<FileCode className="w-6 h-6 text-blue-500" />}
-              title="Robots.txt Validator"
-              description="Ensure your robots.txt file is valid and discoverable."
-              href="/robots-txt"
-            />
-            <ToolFeatureCard 
-              icon={<Globe className="w-6 h-6 text-indigo-500" />}
-              title="WHOIS Lookup"
-              description="Look up domain registration details, owner info, and name servers."
-              href="/whois-checker"
-            />
-            <ToolFeatureCard 
-              icon={<Search className="w-6 h-6 text-rose-500" />}
-              title="AI Summary & SEO"
-              description="Get an AI-generated summary, services list, and SEO recommendations."
-            />
-          </div>
+        <div className="text-center mb-10">
+          <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground">Free Tools</h2>
+          <p className="text-muted-foreground mt-2">Powerful SEO analysis tools at your fingertips</p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <ToolFeatureCard 
+            icon={<Zap className="w-6 h-6 text-amber-500" />}
+            title="Redirect Checker"
+            description="Visualize redirect chains and catch loops before they hurt SEO."
+            href="/redirect-checker"
+          />
+          <ToolFeatureCard 
+            icon={<Unplug className="w-6 h-6 text-emerald-500" />}
+            title="Broken Link Finder"
+            description="Scan pages for 404 errors and broken anchors instantly."
+            href="/broken-links"
+          />
+          <ToolFeatureCard 
+            icon={<Shield className="w-6 h-6 text-purple-500" />}
+            title="Security Audit"
+            description="Verify SSL, HSTS, CSP and other critical security headers."
+            href="/security-checker"
+          />
+          <ToolFeatureCard 
+            icon={<FileCode className="w-6 h-6 text-blue-500" />}
+            title="Robots.txt Validator"
+            description="Ensure your robots.txt file is valid and discoverable."
+            href="/robots-txt"
+          />
+          <ToolFeatureCard 
+            icon={<Globe className="w-6 h-6 text-indigo-500" />}
+            title="WHOIS Lookup"
+            description="Look up domain registration details, owner info, and name servers."
+            href="/whois-checker"
+          />
+          <ToolFeatureCard 
+            icon={<Search className="w-6 h-6 text-rose-500" />}
+            title="AI Summary & SEO"
+            description="Get an AI-generated summary, services list, and SEO recommendations."
+          />
         </div>
 
         {/* Section 3: Recent Analysis */}
