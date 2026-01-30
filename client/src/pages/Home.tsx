@@ -4,8 +4,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { ArrowRight, Globe, Link as LinkIcon, Lock, Search, FileText, Activity, Zap, Shield, FileCode, Unplug } from "lucide-react";
+import { ArrowRight, Globe, Lock, Search, FileText, Activity, Zap, Shield, FileCode, Unplug, CheckCircle2, Info } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
@@ -36,7 +35,6 @@ export default function Home() {
       return;
     }
 
-    // Basic URL cleanup
     let cleanUrl = url.trim();
     if (!cleanUrl.startsWith('http')) {
       cleanUrl = `https://${cleanUrl}`;
@@ -53,7 +51,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      {/* Hero Section */}
+      {/* Section 1: Hero / Search Bar */}
       <div className="relative overflow-hidden bg-black text-white pb-24 pt-16">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop')] bg-cover bg-center opacity-10" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/90" />
@@ -92,12 +90,14 @@ export default function Home() {
                     className="pl-10 h-14 bg-white text-slate-900 border-0 focus-visible:ring-2 ring-primary text-lg"
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
+                    data-testid="input-domain-search"
                   />
                 </div>
                 <Button 
                   size="lg" 
                   disabled={isPending}
                   className="h-14 px-8 text-lg font-semibold bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25"
+                  data-testid="button-analyze"
                 >
                   {isPending ? "Scanning..." : "Analyze Site"}
                   {!isPending && <ArrowRight className="ml-2 w-5 h-5" />}
@@ -110,6 +110,7 @@ export default function Home() {
                     checked={tools.redirect}
                     onCheckedChange={(c) => setTools(prev => ({ ...prev, redirect: c === true }))}
                     className="border-white/50 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                    data-testid="checkbox-redirect"
                   />
                   <span className="text-slate-300 group-hover:text-white transition-colors">Redirect Chains</span>
                 </label>
@@ -118,6 +119,7 @@ export default function Home() {
                     checked={tools.broken_links}
                     onCheckedChange={(c) => setTools(prev => ({ ...prev, broken_links: c === true }))}
                     className="border-white/50 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                    data-testid="checkbox-broken-links"
                   />
                   <span className="text-slate-300 group-hover:text-white transition-colors">Broken Links</span>
                 </label>
@@ -126,6 +128,7 @@ export default function Home() {
                     checked={tools.security}
                     onCheckedChange={(c) => setTools(prev => ({ ...prev, security: c === true }))}
                     className="border-white/50 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                    data-testid="checkbox-security"
                   />
                   <span className="text-slate-300 group-hover:text-white transition-colors">Security Headers</span>
                 </label>
@@ -134,6 +137,7 @@ export default function Home() {
                     checked={tools.robots}
                     onCheckedChange={(c) => setTools(prev => ({ ...prev, robots: c === true }))}
                     className="border-white/50 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                    data-testid="checkbox-robots"
                   />
                   <span className="text-slate-300 group-hover:text-white transition-colors">Robots.txt</span>
                 </label>
@@ -142,6 +146,7 @@ export default function Home() {
                     checked={tools.ai}
                     onCheckedChange={(c) => setTools(prev => ({ ...prev, ai: c === true }))}
                     className="border-white/50 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                    data-testid="checkbox-ai"
                   />
                   <span className="text-slate-300 group-hover:text-white transition-colors">AI Summary</span>
                 </label>
@@ -150,6 +155,7 @@ export default function Home() {
                     checked={tools.whois}
                     onCheckedChange={(c) => setTools(prev => ({ ...prev, whois: c === true }))}
                     className="border-white/50 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                    data-testid="checkbox-whois"
                   />
                   <span className="text-slate-300 group-hover:text-white transition-colors">WHOIS Info</span>
                 </label>
@@ -159,50 +165,58 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <ToolFeatureCard 
-            icon={<Zap className="w-6 h-6 text-amber-500" />}
-            title="Redirect Checker"
-            description="Visualize redirect chains and catch loops before they hurt SEO."
-            href="/redirect-checker"
-          />
-          <ToolFeatureCard 
-            icon={<Unplug className="w-6 h-6 text-emerald-500" />}
-            title="Broken Link Finder"
-            description="Scan pages for 404 errors and broken anchors instantly."
-            href="/broken-links"
-          />
-          <ToolFeatureCard 
-            icon={<Shield className="w-6 h-6 text-purple-500" />}
-            title="Security Audit"
-            description="Verify SSL, HSTS, CSP and other critical security headers."
-            href="/security-checker"
-          />
-          <ToolFeatureCard 
-            icon={<FileCode className="w-6 h-6 text-blue-500" />}
-            title="Robots.txt Validator"
-            description="Ensure your robots.txt file is valid and discoverable."
-            href="/robots-txt"
-          />
-          <ToolFeatureCard 
-            icon={<Globe className="w-6 h-6 text-indigo-500" />}
-            title="WHOIS Lookup"
-            description="Look up domain registration details, owner info, and name servers."
-            href="/whois-checker"
-          />
-          <ToolFeatureCard 
-            icon={<Search className="w-6 h-6 text-rose-500" />}
-            title="AI Summary & SEO"
-            description="Get an AI-generated summary, services list, and SEO recommendations."
-          />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section 2: Free Tools */}
+        <div className="-mt-16 relative z-20">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground">Free Tools</h2>
+            <p className="text-muted-foreground mt-2">Powerful SEO analysis tools at your fingertips</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <ToolFeatureCard 
+              icon={<Zap className="w-6 h-6 text-amber-500" />}
+              title="Redirect Checker"
+              description="Visualize redirect chains and catch loops before they hurt SEO."
+              href="/redirect-checker"
+            />
+            <ToolFeatureCard 
+              icon={<Unplug className="w-6 h-6 text-emerald-500" />}
+              title="Broken Link Finder"
+              description="Scan pages for 404 errors and broken anchors instantly."
+              href="/broken-links"
+            />
+            <ToolFeatureCard 
+              icon={<Shield className="w-6 h-6 text-purple-500" />}
+              title="Security Audit"
+              description="Verify SSL, HSTS, CSP and other critical security headers."
+              href="/security-checker"
+            />
+            <ToolFeatureCard 
+              icon={<FileCode className="w-6 h-6 text-blue-500" />}
+              title="Robots.txt Validator"
+              description="Ensure your robots.txt file is valid and discoverable."
+              href="/robots-txt"
+            />
+            <ToolFeatureCard 
+              icon={<Globe className="w-6 h-6 text-indigo-500" />}
+              title="WHOIS Lookup"
+              description="Look up domain registration details, owner info, and name servers."
+              href="/whois-checker"
+            />
+            <ToolFeatureCard 
+              icon={<Search className="w-6 h-6 text-rose-500" />}
+              title="AI Summary & SEO"
+              description="Get an AI-generated summary, services list, and SEO recommendations."
+            />
+          </div>
         </div>
 
-        {/* Recent Scans */}
+        {/* Section 3: Recent Analysis */}
         <div className="mt-20">
           <div className="flex items-center gap-2 mb-6">
             <Activity className="w-5 h-5 text-primary" />
-            <h2 className="text-2xl font-bold font-display">Recent Analyses</h2>
+            <h2 className="text-2xl font-bold font-display">Recent Analysis</h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -216,16 +230,17 @@ export default function Home() {
                   key={domain.id} 
                   onClick={() => setLocation(`/${domain.domain}`)}
                   className="group bg-card hover:bg-accent/5 rounded-xl p-5 border border-border shadow-sm hover:shadow-md hover:border-primary/50 transition-all cursor-pointer"
+                  data-testid={`card-recent-scan-${domain.id}`}
                 >
-                  <div className="flex justify-between items-start mb-3">
-                    <h3 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors">
+                  <div className="flex justify-between items-start mb-3 gap-2">
+                    <h3 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors truncate">
                       {domain.domain}
                     </h3>
-                    <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
+                    <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full whitespace-nowrap">
                       {domain.lastScannedAt ? formatDistanceToNow(new Date(domain.lastScannedAt)) + ' ago' : 'Just now'}
                     </span>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     {domain.redirectData && <Badge>Redirects</Badge>}
                     {domain.securityData && <Badge>Security</Badge>}
                     {domain.brokenLinksData && <Badge>Links</Badge>}
@@ -233,6 +248,109 @@ export default function Home() {
                 </div>
               ))
             )}
+          </div>
+        </div>
+
+        {/* Section 4: Detailed Tool Information */}
+        <div className="mt-20">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold font-display text-foreground">How Our Tools Work</h2>
+            <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
+              Each tool is designed to give you actionable insights for improving your website's technical SEO and security posture.
+            </p>
+          </div>
+
+          <div className="space-y-12">
+            {/* Redirect Checker */}
+            <ToolDetailSection
+              icon={<Zap className="w-8 h-8 text-amber-500" />}
+              title="Redirect Checker"
+              description="Our Redirect Checker traces the complete path of URL redirects, from the initial request to the final destination. It identifies redirect chains, loops, and potential issues that can slow down your site and confuse search engines."
+              features={[
+                "Visualize complete redirect chains with HTTP status codes",
+                "Detect redirect loops that can trap crawlers",
+                "Identify unnecessary redirect hops affecting page speed",
+                "Check both HTTP and HTTPS redirect behavior",
+                "Export results for team collaboration"
+              ]}
+              href="/redirect-checker"
+            />
+
+            {/* Broken Link Finder */}
+            <ToolDetailSection
+              icon={<Unplug className="w-8 h-8 text-emerald-500" />}
+              title="Broken Link Finder"
+              description="The Broken Link Finder crawls your pages to identify dead links, 404 errors, and broken anchor references. Fixing broken links improves user experience and prevents search engines from encountering dead ends on your site."
+              features={[
+                "Scan internal and external links on any page",
+                "Identify 404 errors, timeouts, and server errors",
+                "Find broken anchor links and missing images",
+                "Prioritize fixes based on link importance",
+                "Bulk scan multiple URLs at once"
+              ]}
+              href="/broken-links"
+              reverse
+            />
+
+            {/* Security Header Checker */}
+            <ToolDetailSection
+              icon={<Shield className="w-8 h-8 text-purple-500" />}
+              title="Security Header Checker"
+              description="Security headers protect your website and users from common attacks. Our Security Audit tool analyzes your HTTP response headers and provides recommendations for implementing essential security measures."
+              features={[
+                "Check for HTTPS and SSL certificate validity",
+                "Analyze HSTS (HTTP Strict Transport Security) configuration",
+                "Verify Content Security Policy (CSP) headers",
+                "Detect X-Frame-Options and clickjacking protection",
+                "Score your overall security posture"
+              ]}
+              href="/security-checker"
+            />
+
+            {/* Robots.txt Validator */}
+            <ToolDetailSection
+              icon={<FileCode className="w-8 h-8 text-blue-500" />}
+              title="Robots.txt Validator"
+              description="Your robots.txt file tells search engines which pages to crawl and which to ignore. Our validator ensures your file is properly formatted and not accidentally blocking important content from being indexed."
+              features={[
+                "Parse and validate robots.txt syntax",
+                "Check for common configuration errors",
+                "Test specific URLs against your rules",
+                "Identify conflicting or redundant directives",
+                "View how different bots interpret your rules"
+              ]}
+              href="/robots-txt"
+              reverse
+            />
+
+            {/* WHOIS Lookup */}
+            <ToolDetailSection
+              icon={<Globe className="w-8 h-8 text-indigo-500" />}
+              title="WHOIS Lookup"
+              description="WHOIS lookup provides essential domain registration information including ownership details, registration dates, and name server configuration. Use it for research, verification, or monitoring domain expiration."
+              features={[
+                "View domain registrant and contact information",
+                "Check registration and expiration dates",
+                "Identify name servers and DNS configuration",
+                "Research domain history and ownership changes",
+                "Monitor competitor domains"
+              ]}
+              href="/whois-checker"
+            />
+
+            {/* AI Summary */}
+            <ToolDetailSection
+              icon={<Search className="w-8 h-8 text-rose-500" />}
+              title="AI Summary & SEO Analysis"
+              description="Our AI-powered analysis provides intelligent insights about your website. It generates a comprehensive summary of your site's purpose, identifies services offered, and provides tailored SEO recommendations based on your content."
+              features={[
+                "AI-generated website summary and description",
+                "Automatic service and feature detection",
+                "Personalized SEO improvement suggestions",
+                "Content quality assessment",
+                "Competitive positioning insights"
+              ]}
+            />
           </div>
         </div>
       </div>
@@ -260,6 +378,64 @@ function ToolFeatureCard({ icon, title, description, href }: { icon: React.React
   }
 
   return content;
+}
+
+function ToolDetailSection({ 
+  icon, 
+  title, 
+  description, 
+  features, 
+  href,
+  reverse = false 
+}: { 
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  features: string[];
+  href?: string;
+  reverse?: boolean;
+}) {
+  return (
+    <div className={`flex flex-col ${reverse ? 'lg:flex-row-reverse' : 'lg:flex-row'} gap-8 items-center`}>
+      <div className="flex-1 space-y-4">
+        <div className="flex items-center gap-3">
+          <div className="h-14 w-14 rounded-xl bg-card border border-border flex items-center justify-center shadow-sm">
+            {icon}
+          </div>
+          <h3 className="text-2xl font-bold font-display">{title}</h3>
+        </div>
+        <p className="text-muted-foreground leading-relaxed">{description}</p>
+        <ul className="space-y-2">
+          {features.map((feature, index) => (
+            <li key={index} className="flex items-start gap-2">
+              <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+              <span className="text-foreground">{feature}</span>
+            </li>
+          ))}
+        </ul>
+        {href && (
+          <Link href={href}>
+            <Button className="mt-4" data-testid={`button-try-${href.replace('/', '')}`}>
+              Try {title}
+              <ArrowRight className="ml-2 w-4 h-4" />
+            </Button>
+          </Link>
+        )}
+      </div>
+      <div className="flex-1 w-full">
+        <div className="bg-gradient-to-br from-muted/50 to-muted rounded-2xl p-8 border border-border">
+          <div className="aspect-video bg-card rounded-xl border border-border shadow-inner flex items-center justify-center">
+            <div className="text-center p-6">
+              <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                {icon}
+              </div>
+              <p className="text-sm text-muted-foreground">Interactive demo preview</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function Badge({ children }: { children: React.ReactNode }) {
