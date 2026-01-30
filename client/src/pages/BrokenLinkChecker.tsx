@@ -8,6 +8,8 @@ import { ArrowRight, Link2, Loader2, AlertCircle, CheckCircle2, Globe, XCircle, 
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { motion } from "framer-motion";
+import { useAuth } from "@clerk/clerk-react";
+import { useLocation } from "wouter";
 
 interface LinkResult {
   url: string;
@@ -36,6 +38,16 @@ interface WebsiteScanResult {
 export default function BrokenLinkChecker() {
   const [mode, setMode] = useState<"single" | "website">("single");
   const [url, setUrl] = useState("");
+  const { isSignedIn } = useAuth();
+  const [, navigate] = useLocation();
+
+  const handleWebsiteModeClick = () => {
+    if (!isSignedIn) {
+      navigate("/sign-up");
+      return;
+    }
+    setMode("website");
+  };
 
   const { mutate: checkSingleLink, isPending: isSinglePending, data: singleResult, error: singleError } = useMutation<SingleLinkResult>({
     mutationFn: async () => {
@@ -150,7 +162,7 @@ export default function BrokenLinkChecker() {
                 <button
                   type="button"
                   data-testid="button-mode-website"
-                  onClick={() => setMode("website")}
+                  onClick={handleWebsiteModeClick}
                   className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
                     mode === "website" 
                       ? "bg-background text-foreground shadow-sm" 

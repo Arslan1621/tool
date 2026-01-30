@@ -10,6 +10,8 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { motion } from "framer-motion";
 import type { RedirectHop } from "@shared/schema";
+import { useAuth } from "@clerk/clerk-react";
+import { useLocation } from "wouter";
 
 interface BulkRedirectResult {
   url: string;
@@ -21,6 +23,16 @@ export default function RedirectChecker() {
   const [mode, setMode] = useState<"single" | "bulk">("single");
   const [singleUrl, setSingleUrl] = useState("");
   const [bulkUrls, setBulkUrls] = useState("");
+  const { isSignedIn } = useAuth();
+  const [, navigate] = useLocation();
+
+  const handleBulkModeClick = () => {
+    if (!isSignedIn) {
+      navigate("/sign-up");
+      return;
+    }
+    setMode("bulk");
+  };
 
   const { mutate: checkRedirects, isPending, data: results } = useMutation<BulkRedirectResult[]>({
     mutationFn: async () => {
@@ -129,7 +141,7 @@ export default function RedirectChecker() {
                 <button
                   type="button"
                   data-testid="button-mode-bulk"
-                  onClick={() => setMode("bulk")}
+                  onClick={handleBulkModeClick}
                   className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
                     mode === "bulk" 
                       ? "bg-background text-foreground shadow-sm" 

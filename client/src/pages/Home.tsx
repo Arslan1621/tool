@@ -9,6 +9,7 @@ import { ArrowRight, Globe, Link as LinkIcon, Lock, Search, FileText, Activity, 
 import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
+import { useAuth } from "@clerk/clerk-react";
 
 export default function Home() {
   const [url, setUrl] = useState("");
@@ -24,10 +25,16 @@ export default function Home() {
   const { data: recentScans } = useDomains();
   const { mutate: runScan, isPending } = useRunScan();
   const [, setLocation] = useLocation();
+  const { isSignedIn } = useAuth();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!url) return;
+
+    if (!isSignedIn) {
+      setLocation("/sign-up");
+      return;
+    }
 
     // Basic URL cleanup
     let cleanUrl = url.trim();
