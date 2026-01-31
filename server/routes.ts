@@ -7,6 +7,7 @@ import { z } from "zod";
 import { load } from "cheerio";
 import { URL } from "url";
 import OpenAI from "openai";
+// @ts-ignore
 import whois from "whois-json";
 // @ts-ignore
 import * as rdap from "node-rdap";
