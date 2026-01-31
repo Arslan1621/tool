@@ -292,7 +292,6 @@ Sitemap: https://${_req.get('host')}/sitemap.xml`;
 
   // GET /api/domains/:domain
   app.get(api.domains.get.path, async (req, res) => {
-    const domain = req.params.domain;
     const data = await storage.getDomain(domain);
     if (!data) return res.status(404).json({ message: "Domain report not found" });
     res.json(data);
