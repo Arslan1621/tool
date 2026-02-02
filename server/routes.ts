@@ -298,10 +298,10 @@ Sitemap: https://${_req.get('host')}/sitemap.xml`;
   // });
   // Line 295 - FIX:
   app.get(api.domains.get.path, async (req, res) => {
-  const { domain } = req.params; // ✅ Extract domain from URL parameters
-  const data = await storage.getDomain(domain);
-  if (!data) return res.status(404).json({ message: "Domain report not found" });
-  res.json(data);
+    const { domain } = req.params; // ✅ Extract domain from URL parameters
+    const data = await storage.getDomain(domain);
+    if (!data) return res.status(404).json({ message: "Domain report not found" });
+    res.json(data);
   });
   
   // POST /api/redirect-check (bulk redirect checking)
