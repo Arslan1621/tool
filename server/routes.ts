@@ -291,10 +291,17 @@ Sitemap: https://${_req.get('host')}/sitemap.xml`;
   });
 
   // GET /api/domains/:domain
+  // app.get(api.domains.get.path, async (req, res) => {
+  //   const data = await storage.getDomain(domain);
+  //   if (!data) return res.status(404).json({ message: "Domain report not found" });
+  //   res.json(data);
+  // });
+  // GET /api/domains/:domain
   app.get(api.domains.get.path, async (req, res) => {
-    const data = await storage.getDomain(domain);
-    if (!data) return res.status(404).json({ message: "Domain report not found" });
-    res.json(data);
+  const { domain } = req.params; // Destructure domain from req.params
+  const data = await storage.getDomain(domain); 
+  if (!data) return res.status(404).json({ message: "Domain report not found" });
+  res.json(data);
   });
 
   // POST /api/redirect-check (bulk redirect checking)
