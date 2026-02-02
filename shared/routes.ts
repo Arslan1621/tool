@@ -1,6 +1,6 @@
 
 import { z } from 'zod';
-import { insertDomainSchema, domains } from './schema';
+import { insertDomainSchema, domains } from './schema.js';
 
 export const errorSchemas = {
   validation: z.object({
