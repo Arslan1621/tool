@@ -1,8 +1,8 @@
 import express, { type Request, Response, NextFunction } from "express";
-import { registerRoutes } from "./routes";
-import { serveStatic } from "./static";
+import { registerRoutes } from "./routes.js"; 
+import { serveStatic } from "./static.js"; 
 import { createServer } from "http";
-import { storage } from "./storage";
+import { storage } from "./storage.js";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
@@ -23,7 +23,7 @@ app.use(express.urlencoded({ extended: false }));
   if (process.env.NODE_ENV === "production") {
     serveStatic(app);
   } else {
-    const { setupVite } = await import("./vite");
+    const { setupVite } = await import("./vite.js");
     await setupVite(httpServer, app );
   }
 
