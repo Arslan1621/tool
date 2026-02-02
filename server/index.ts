@@ -1,8 +1,8 @@
 import express, { type Request, Response, NextFunction } from "express";
-import { registerRoutes } from "./routes";
-import { serveStatic } from "./static";
+import { registerRoutes } from "./routes.ts";
+import { serveStatic } from "./static.ts";
 import { createServer } from "http";
-import { storage } from "./storage";
+import { storage } from "./storage.ts";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
