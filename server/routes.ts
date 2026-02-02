@@ -228,19 +228,38 @@ export async function registerRoutes(
   });
 
   // GET /robots.txt
+//   app.get('/robots.txt', (_req, res) => {
+//     const robots = `User-agent: *
+// Allow: /
+// Sitemap: https://${_req.get('host')}/sitemap.xml`;
+//     res.header('Content-Type', 'text/plain');
+//     res.send(robots);
+//   });
   app.get('/robots.txt', (_req, res) => {
+    // Use .hostname (always a string) or ensure .get() returns a string
+    const host = _req.get('host') || 'localhost';
+    const cleanHost = Array.isArray(host) ? host[0] : host;
+  
     const robots = `User-agent: *
-Allow: /
-Sitemap: https://${_req.get('host')}/sitemap.xml`;
+  Allow: /
+    Sitemap: https://${cleanHost}/sitemap.xml`;
     res.header('Content-Type', 'text/plain');
     res.send(robots);
   });
 
   // GET /sitemap.xml
+  // app.get('/sitemap.xml', async (_req, res) => {
+  //   try {
+  //     const domains = await storage.getRecentDomains(50000); // Get more for sitemap
+  //     const baseUrl = `https://${_req.get('host')}`;
   app.get('/sitemap.xml', async (_req, res) => {
-    try {
-      const domains = await storage.getRecentDomains(50000); // Get more for sitemap
-      const baseUrl = `https://${_req.get('host')}`;
+  try {
+    const domains = await storage.getRecentDomains(50000);
+    const host = _req.get('host') || 'localhost';
+    const cleanHost = Array.isArray(host) ? host[0] : host;
+    const baseUrl = `https://${cleanHost}`;
+    
+    // ... rest of your sitemap logic
       
       // Static pages with their priorities and change frequencies
       const staticPages = [
