@@ -291,12 +291,19 @@ Sitemap: https://${_req.get('host')}/sitemap.xml`;
   });
 
   // GET /api/domains/:domain
+  // app.get(api.domains.get.path, async (req, res) => {
+  //   const data = await storage.getDomain(domain);
+  //   if (!data) return res.status(404).json({ message: "Domain report not found" });
+  //   res.json(data);
+  // });
+  // Line 295 - FIX:
   app.get(api.domains.get.path, async (req, res) => {
-    const data = await storage.getDomain(domain);
-    if (!data) return res.status(404).json({ message: "Domain report not found" });
-    res.json(data);
+  const { domain } = req.params; // ✅ Extract domain from URL parameters
+  const data = await storage.getDomain(domain);
+  if (!data) return res.status(404).json({ message: "Domain report not found" });
+  res.json(data);
   });
-
+  
   // POST /api/redirect-check (bulk redirect checking)
   app.post('/api/redirect-check', async (req, res) => {
     try {
