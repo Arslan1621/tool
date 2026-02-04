@@ -40,6 +40,15 @@ const blogPosts = [
     category: "Domains",
     date: "Jan 10, 2026",
     readTime: "4 min read"
+  },
+    {
+    id: 5,
+    slug: "101",
+    title: "101 Switching Protocols",
+    description: "Learn what the 101 Switching Protocols status code means, why it’s used, and how it enables protocol upgrades like WebSockets in modern web communication.",
+    category: "Status Code",
+    date: "Feb 2, 2026",
+    readTime: "5 min read"
   }
 ];
 
