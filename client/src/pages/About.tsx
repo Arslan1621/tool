@@ -33,7 +33,7 @@ export default function About() {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-20">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-0 relative z-20">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card className="shadow-xl border-border overflow-hidden bg-card">
             <CardContent className="pt-6">
