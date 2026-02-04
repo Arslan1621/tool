@@ -383,7 +383,7 @@ export default function BlogPost() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-20">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-0 relative z-20">
         <Card className="shadow-xl border-border overflow-hidden bg-card">
           <CardContent className="pt-8 pb-8 px-6 md:px-10">
             <article className="prose prose-slate dark:prose-invert max-w-none">
