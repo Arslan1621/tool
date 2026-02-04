@@ -295,7 +295,8 @@ const slugMap: Record<number, string> = {
   1: "understanding-redirect-chains",
   2: "essential-security-headers",
   3: "effective-robots-txt",
-  4: "whois-lookup-guide"
+  4: "whois-lookup-guide",
+  5: "101" 
 };
 
 export default function BlogPost() {
